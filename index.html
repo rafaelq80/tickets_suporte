@@ -135,7 +135,7 @@ input:disabled{background:#f1f4f9;color:#8a94a6;cursor:not-allowed}
    <input id="justificativa" maxlength="160" placeholder="Ex.: Impede o fechamento do mês"><div class="msg" id="e-justificativa"></div></div>
   <div><label for="descricao"><span><i class="i li" data-i="doc"></i>Descrição detalhada do problema <b class="req">*</b></span><span class="hint mono" id="cd">0 / 1500 caracteres</span></label>
    <textarea id="descricao" maxlength="1500" placeholder="O que acontece, quando começou, em qual dispositivo, mensagens de erro e o que o usuário já tentou."></textarea><div class="msg" id="e-descricao"></div></div>
-  <div><label for="passos"><span><i class="i li" data-i="list"></i>Passos realizados <span class="hint">(um por linha)</span> <b class="req">*</b></span><span class="hint">Diagnóstico preliminar</span></label>
+  <div><label for="passos"><span><i class="i li" data-i="list"></i>Passos realizados <span class="hint">(um por linha, sem numerar)</span> <b class="req">*</b></span><span class="hint">Diagnóstico preliminar</span></label>
    <textarea id="passos" maxlength="1500" placeholder="Confirmei o relato com o usuário&#10;Reiniciei o aplicativo&#10;Reparei o perfil do Outlook"></textarea><div class="msg" id="e-passos"></div></div>
   <div><label for="anexos"><span><i class="i li" data-i="clip2"></i>Anexos <span class="hint">(prints de tela, relatórios de log; sem anexos: "Nenhum")</span> <b class="req">*</b></span></label>
    <input id="anexos" maxlength="300" value="Nenhum" placeholder="Nenhum">
@@ -318,6 +318,28 @@ document.querySelectorAll("#prioGrupo button").forEach(b => b.onclick = () => {
 // Validação
 const norm = x => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
 const toks = x => new Set(norm(x).split(" ").filter(w => w.length > 2));
+// Passos realizados: um por linha. A numeração é automática (círculo no PDF, "1." na planilha),
+// então "1. texto", "2) texto" ou "- texto" digitados à mão perdem o marcador.
+// Linha só com o número ("1.") gruda no texto da linha seguinte se ela não tiver número próprio;
+// senão conta como "vazio" (passo sem descrição).
+const MARCA = /^\(?\d{1,3}\s?[.)\]:\-–—]\s+|^[-•*·▪●]\s+/;
+const SO_MARCA = /^\(?\d{1,3}\s?[.)\]:\-–—]?$|^[-•*·▪●]$/;
+function lerPassos(raw) {
+  const L = String(raw || "").replace(/[\u2028\u2029\u0085\u000b\u000c]/g, "\n").replace(/\u00a0/g, " ")
+    .split(/\r\n|\r|\n/).map(x => x.trim()).filter(Boolean);
+  const itens = []; let vazios = 0;
+  for (let i = 0; i < L.length; i++) {
+    if (SO_MARCA.test(L[i])) {
+      const prox = L[i + 1];
+      if (prox !== undefined && !SO_MARCA.test(prox) && !MARCA.test(prox)) { itens.push(prox); i++; }
+      else vazios++;
+      continue;
+    }
+    const txt = L[i].replace(MARCA, "").trim();
+    if (txt) itens.push(txt); else vazios++;
+  }
+  return { itens, vazios };
+}
 const sim = (a, b) => {
   const A = toks(a), B = toks(b); if (!A.size || !B.size) return 0;
   let i = 0; A.forEach(w => { if (B.has(w)) i++; }); return i / (A.size + B.size - i);
@@ -331,7 +353,9 @@ const regras = {
   justificativa: v => v.length < 5 ? "Justifique brevemente a prioridade (mín. 5 caracteres)." : "",
   descricao: v => v.length < 30 ? "Descreva o problema com pelo menos 30 caracteres." : norm(v) === norm(val("titulo")) ? "A descrição não pode ser igual ao título. Detalhe o que acontece, quando começou e em qual dispositivo." : "",
   passos: v => {
-    if (v.split("\n").filter(l => l.trim()).length < 1) return "Registre ao menos um passo realizado.";
+    const pp = lerPassos(v);
+    if (!pp.itens.length) return "Registre ao menos um passo realizado.";
+    if (pp.vazios) return "Há passos com apenas o número. Escreva o que foi feito em cada passo (a numeração é automática).";
     const a = norm(v), b = norm(val("descricao"));
     if (a && b && (a === b || (Math.min(a.length, b.length) >= 20 && (a.includes(b) || b.includes(a))))) return "Os passos realizados não podem repetir a descrição. Registre as ações executadas no diagnóstico.";
     return "";
@@ -421,7 +445,7 @@ function sensiveis(d) {
 function complementares(d) {
   const C = [], st = val("status"), conc = val("conclusao"), desc = d.descricao.toLowerCase(), j = d.justificativa.toLowerCase();
   const add = (nome, nivel, pen, msg, dica, info) => C.push({ nome, nivel, pen: nivel === "ok" ? 0 : pen, msg, dica: nivel === "ok" ? "" : dica, info: !!info });
-  const L = d.passos.split("\n").map(x => x.trim()).filter(Boolean), txt = L.join(" ").toLowerCase(), fimTxt = L.slice(-2).join(" ").toLowerCase();
+  const L = lerPassos(d.passos).itens, txt = L.join(" ").toLowerCase(), fimTxt = L.slice(-2).join(" ").toLowerCase();
 
   // 1) Dados sensíveis
   const ach = sensiveis(d), tipos = Object.keys(ach);
@@ -486,7 +510,7 @@ function complementares(d) {
   return C;
 }
 function analisar() {
-  const d = {}; ["titulo","categoria","usuario","prioridade","justificativa","descricao","passos","anexos"].forEach(k => d[k] = val(k));
+  const d = {}; ["titulo","categoria","usuario","prioridade","justificativa","descricao","passos","anexos","observacoes"].forEach(k => d[k] = val(k));
   const desc = d.descricao.toLowerCase(), all = (d.titulo + " " + d.descricao + " " + d.passos).toLowerCase();
   const C = [];
   const add = (nome, pts, max, msg, dica) => C.push({ nome, pts, max, msg, dica, nivel: pts >= max * .85 ? "ok" : pts >= max * .5 ? "warn" : "bad" });
@@ -526,13 +550,13 @@ function analisar() {
     ["quando começou", /desde|come[çc]ou|hoje|ontem|ap[óo]s|h[áa] \d|manh[ãa]|tarde|semana|\d{1,2}\s?(h|:)|\d{1,2}\/\d{1,2}/],
     ["dispositivo/sistema", /notebook|desktop|computador|\bpc\b|celular|windows|\bmac|linux|android|iphone|\bios\b|navegador|chrome|edge|firefox|m[áa]quina|dispositivo|tablet/],
     ["mensagem de erro (ou que não há mensagem)", /erro|mensagem|c[óo]digo|aparece|exibe|nenhuma|sem mensagem|tela (preta|branca)/],
-    ["o que o usuário já tentou", /tent|reinici|testou|limp|reinstal|desligou|j[áa] fez/] ];
+    ["o que o usuário já tentou", /\btent(?:ei|ou|amos|aram|ar|ando|ativ\w*)\b|reinici|testou|limp|reinstal|desligou|j[áa] fez/] ];
   const faltam = el.filter(e => !e[1].test(desc)).map(e => e[0]);
   if (d.descricao.length < 80) faltam.push("mais detalhes (texto curto)");
   add("Descrição", 25 - faltam.length * 5, 25, faltam.length ? "Faltam informações importantes." : "Traz os elementos essenciais.", faltam.length ? "Acrescente: " + faltam.join("; ") + "." : "");
 
   // Passos
-  const L = d.passos.split("\n").map(x => x.trim()).filter(Boolean), n = L.length;
+  const L = lerPassos(d.passos).itens, n = L.length;
   const pn = n >= 4 ? 10 : n === 3 ? 8 : n === 2 ? 5 : 2;
   const longos = L.filter(x => x.length >= 15).length;
   const pd = longos >= n ? 5 : longos >= n / 2 ? 3 : 1;
@@ -688,7 +712,7 @@ async function exportarExcel() {
     deriv(t);
     const r = ws.addRow({ num: t.num, titulo: t.titulo, categoria: t.categoria, prioridade: t.prioridade, status: t.status, usuario: t.usuario, departamento: t.departamento || "", responsavel: t.responsavel,
       aberto: xl(new Date(t.aberto)), conclusao: t.conclusao ? xl(new Date(t.conclusao)) : null, atualizado: xl(new Date(t.atualizado || t.aberto)), tempo: t.tempo, slaMeta: t.slaMeta, slaTxt: t.slaTxt, justificativa: t.justificativa, descricao: t.descricao,
-      passos: t.passos.split("\n").map(x => x.trim()).filter(Boolean).map((x, i) => (i + 1) + ". " + x).join("\n"), anexos: t.anexos, observacoes: t.observacoes || "", nota: t.avaliacao.score, grau: t.avaliacao.grau, alertas: (t.avaliacao.alertas || []).join("; ") });
+      passos: lerPassos(t.passos).itens.map((x, i) => (i + 1) + ". " + x).join("\n"), anexos: t.anexos, observacoes: t.observacoes || "", nota: t.avaliacao.score, grau: t.avaliacao.grau, alertas: (t.avaliacao.alertas || []).join("; ") });
     r.eachCell({ includeEmpty: true }, c => {
       c.alignment = { vertical: "top", wrapText: true }; c.border = { top: bd, bottom: bd, left: bd, right: bd }; c.font = { name: "Calibri", size: 10 };
       if (k % 2) c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFF7F9FD" } };
@@ -810,7 +834,8 @@ async function gerarPDF(t) {
   y += 8;
 
   secao(2, "Passos realizados");
-  const P = t.passos.split("\n").map(x => x.trim()).filter(Boolean);
+  const P = lerPassos(t.passos).itens;
+  if (!P.length) { T("italic", 10.5, GRAY); doc.text("Nenhum passo registrado", M, y); y += 8; }
   P.forEach((st, k) => {
     T("normal", 10.5, INK); const L = doc.splitTextToSize(st, W - 12), h = L.length * 5.4;
     ensure(h + 5);
