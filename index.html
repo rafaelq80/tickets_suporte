@@ -110,6 +110,17 @@ input:disabled{background:#f1f4f9;color:#8a94a6;cursor:not-allowed}
 
 .rod{margin-top:auto;padding:16px 0 calc(18px + env(safe-area-inset-bottom,0px));border-top:1px solid #c9d2e2;display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;font-size:14px;color:#4a5468}.rod .rl{display:flex;gap:6px 14px;justify-content:center;flex-wrap:wrap}.rod .rs{font-size:12.5px;color:#6b7587}.aviso-dados{display:flex;gap:10px;align-items:flex-start;margin:0 0 14px;padding:10px 14px;background:#fff8e1;border-left:4px solid #b7791f;border-radius:4px;font-size:13.5px;color:#5c4510}.aviso-dados .i{flex:none;margin-top:1px}
 .rod b{color:var(--ink);font-weight:600}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.nt{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--c);background:var(--cb);color:var(--c);border-radius:12px;padding:2px 10px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.nt::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
+.nt:hover{box-shadow:0 0 0 3px var(--cb)}.nt:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.mbox-av{max-width:680px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto;display:flex;flex-direction:column;gap:14px}
+.av-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.mbox .av-h h2{color:var(--pri2);align-items:flex-start;flex-wrap:wrap}.av-h small{display:block;color:var(--mut);font-weight:400;font-size:13.5px;margin-top:2px;overflow-wrap:anywhere}
+.av-s{display:flex;gap:16px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:12px 16px}
+.av-s .n{font-size:34px;font-weight:700;color:var(--c);line-height:1}.av-s .n small{font-size:14px;color:var(--mut);font-weight:500}
+.av-s .t{flex:1;min-width:0}.av-s .t b{color:var(--c)}.av-s .t p{margin:2px 0 0;font-size:13.5px;color:var(--mut)}
+.mbox-av .mact{margin-top:0}
 .hd-form{flex-wrap:nowrap;align-items:center}.hd-form .tit{flex:1;min-width:0}.hd-form .logoArea{flex:none;align-items:center}
 @media(max-width:640px){.hd-form{flex-wrap:wrap}.hd-form .logoArea{margin-left:0}}
 td{vertical-align:middle}
@@ -134,14 +145,14 @@ th:last-child,td:last-child{width:1%;white-space:nowrap}
 <div class="card" id="tela0">
  <div class="hd tb"><div><h1><i class="i" data-i="ticket" style="width:26px;height:26px"></i>Simulador de Preenchimento de Tickets - Suporte Técnico</h1><div class="meta" id="cont"></div></div>
   <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn d" id="limpar"><i class="i" data-i="trash"></i>Excluir todos</button><button type="button" class="btn" id="xls"><i class="i" data-i="xls"></i>Exportar Excel</button><button type="button" class="btn p" id="novo"><i class="i" data-i="plus"></i>Novo ticket</button></div></div>
- <div class="tw"><table id="tab"><thead><tr><th>Nº</th><th>Título</th><th>Solicitante</th><th>Prioridade</th><th>Status</th><th>Responsável</th><th>Abertura</th><th>Conclusão</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+ <div class="tw"><table id="tab"><thead><tr><th>Nº</th><th>Título</th><th>Solicitante</th><th>Prioridade</th><th>Status</th><th>Responsável</th><th>Abertura</th><th>Conclusão</th><th>Nota</th><th><span class="sr">Ações</span></th></tr></thead><tbody id="tb"></tbody></table></div>
  <div class="vazio" id="vazio" hidden><i class="i" data-i="inbox" style="width:34px;height:34px;display:block;margin:0 auto 8px;color:#a9b4c8"></i>Nenhum ticket cadastrado ainda. Clique em «Novo ticket» para começar.</div>
 </div>
 <div class="card nw" id="tela1" hidden>
  <div class="hd hd-form">
   <div class="tit">
    <h1><i class="i" data-i="ticket" style="width:26px;height:26px"></i><span>Simulador de Preenchimento de Tickets<br>Suporte Técnico</span></h1>
-   <div class="meta"><span class="chip mono" id="num"></span><span>•</span><i class="i" data-i="cal" style="width:16px;height:16px"></i><span id="dataLonga"></span><span id="data" hidden></span></div>
+   <div class="meta"><span class="chip mono" id="num"></span><span>•</span><i class="i" data-i="cal" style="width:16px;height:16px"></i><span id="dataLonga"></span><span id="data" hidden></span><span id="atuWrap" hidden style="display:inline-flex;gap:6px;align-items:center">•<i class="i" data-i="clock" style="width:16px;height:16px"></i><span id="atu"></span></span></div>
   </div>
   <div class="logoArea">
    <div class="lbox" id="logoBox" title="Selecionar o logo da empresa"><i class="i" data-i="up"></i><span>Selecionar logotipo<br><small>PNG ou JPG</small></span></div>
@@ -204,6 +215,15 @@ th:last-child,td:last-child{width:1%;white-space:nowrap}
   <p id="mdlD"></p>
   <p class="dica">Dica: use «Exportar Excel» antes se quiser guardar uma cópia.</p>
   <div class="mact"><button type="button" class="btn" id="mdlNo">Cancelar</button><button type="button" class="btn d2" id="mdlSim">Sim, excluir tudo</button></div>
+ </div>
+</div>
+<div class="mdl" id="mdlAv" hidden>
+ <div class="mbox mbox-av" role="dialog" aria-modal="true" aria-labelledby="avT">
+  <div class="av-h"><div><h2 id="avT"><i class="i" data-i="clip" style="width:22px;height:22px"></i>Avaliação do ticket</h2><small id="avSub"></small></div><button type="button" class="x" id="avX" aria-label="Fechar"><i class="i" data-i="x"></i></button></div>
+  <div class="av-s" id="avScore"><div class="n"><span id="avN"></span><small> /100</small></div><div class="t"><b id="avG"></b><p id="avD"></p><div class="bar"><i id="avB"></i></div></div></div>
+  <p class="dica" id="avNota" hidden></p>
+  <ul class="checks" id="avList"></ul>
+  <div class="mact"><button type="button" class="btn" id="avFechar">Fechar</button><button type="button" class="btn p" id="avEditar"><i class="i" data-i="edit"></i>Editar ticket</button></div>
  </div>
 </div>
 <div class="ok" id="ok"></div>
@@ -310,10 +330,11 @@ T.forEach(t => { if (t && CAT_ANTIGA[t.categoria]) t.categoria = CAT_ANTIGA[t.ca
 const guardar = () => { try { localStorage.setItem(LS, JSON.stringify(T)); } catch (e) {} };
 const fmt = d => d.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
 const loc = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+const fusoCurto = d => { try { return new Intl.DateTimeFormat("pt-BR", { timeZoneName: "short" }).formatToParts(d).find(x => x.type === "timeZoneName").value; } catch (e) { return ""; } };
 function cabecalho() {
   const d = new Date(cur.aberto), p = n => String(n).padStart(2, "0");
-  $("num").textContent = cur.num;
-  $("dataLonga").textContent = d.getDate() + " de " + MES[d.getMonth()] + " de " + d.getFullYear() + " - " + p(d.getHours()) + ":" + p(d.getMinutes()) + " BRT";
+  $("num").textContent = cur.num; $("atuWrap").hidden = !cur.atualizado; if (cur.atualizado) $("atu").textContent = "Atualizado em " + fmt(new Date(cur.atualizado));
+  $("dataLonga").textContent = d.getDate() + " de " + MES[d.getMonth()] + " de " + d.getFullYear() + " - " + p(d.getHours()) + ":" + p(d.getMinutes()) + " " + fusoCurto(d);
 }
 const LSQ = "tn1_seq";
 const lerSeq = () => { try { return JSON.parse(localStorage.getItem(LSQ) || "{}") || {}; } catch (e) { return {}; } };
@@ -652,6 +673,20 @@ function analisar() {
 
 
 const PRN = { "Baixa": "b", "Média": "m", "Alta": "a", "Crítica": "c" };
+const rot = n => n === "ok" ? "Status: OK" : n === "warn" ? "Status: Aviso" : "Status: Crítico";
+function criarLinha(c, compl) {
+  const li = document.createElement("li"); li.className = "n-" + c.nivel + (c.nivel === "ok" ? "" : " w");
+  li.innerHTML = '<i class="i ic" data-i="' + c.nivel + '"></i><div class="tx"><b></b><p></p></div><span class="st"></span>';
+  li.querySelector("b").textContent = c.nome; li.querySelector("p").textContent = c.msg;
+  li.querySelector(".st").textContent = compl ? (c.info ? (c.nivel === "ok" ? "Informativo" : "Atenção") : c.nivel === "ok" ? "Status: OK" : rot(c.nivel) + " (−" + c.pen + " pts)")
+    : (c.nivel === "ok" ? "Status: OK (+" + c.pts + " pts)" : rot(c.nivel) + " (+" + c.pts + " de " + c.max + " pts)");
+  if (c.dica) {
+    const h = document.createElement("div"); h.className = "hint2";
+    h.innerHTML = '<i class="i" data-i="bulb" style="width:15px;height:15px"></i><span></span>';
+    h.querySelector("span").textContent = "Dica de melhoria: " + c.dica; li.append(h);
+  }
+  icons(li); return li;
+}
 function mostrarAnalise() {
   avaliacao = analisar();
   const a = avaliacao, d = a.d, R = $("resumo"); R.innerHTML = "";
@@ -664,20 +699,7 @@ function mostrarAnalise() {
   $("sp").textContent = a.score + " de 100 pontos possíveis"; $("sd").textContent = a.texto + (a.pen ? " " + a.pen + " pts descontados nas verificações complementares." : "");
   $("g1").setAttribute("stroke-dasharray", a.score + " 100"); $("sb").style.width = a.score + "%";
   const ul = $("checks"); ul.innerHTML = "";
-  const rot = n => n === "ok" ? "Status: OK" : n === "warn" ? "Status: Aviso" : "Status: Crítico";
-  const linha = (c, compl) => {
-    const li = document.createElement("li"); li.className = "n-" + c.nivel + (c.nivel === "ok" ? "" : " w");
-    li.innerHTML = '<i class="i ic" data-i="' + c.nivel + '"></i><div class="tx"><b></b><p></p></div><span class="st"></span>';
-    li.querySelector("b").textContent = c.nome; li.querySelector("p").textContent = c.msg;
-    li.querySelector(".st").textContent = compl ? (c.info ? (c.nivel === "ok" ? "Informativo" : "Atenção") : c.nivel === "ok" ? "Status: OK" : rot(c.nivel) + " (−" + c.pen + " pts)")
-      : (c.nivel === "ok" ? "Status: OK (+" + c.pts + " pts)" : rot(c.nivel) + " (+" + c.pts + " de " + c.max + " pts)");
-    if (c.dica) {
-      const h = document.createElement("div"); h.className = "hint2";
-      h.innerHTML = '<i class="i" data-i="bulb" style="width:15px;height:15px"></i><span></span>';
-      h.querySelector("span").textContent = "Dica de melhoria: " + c.dica; li.append(h);
-    }
-    icons(li); ul.append(li);
-  };
+  const linha = (c, compl) => ul.append(criarLinha(c, compl));
   a.checks.forEach(c => linha(c, false));
   const sep = document.createElement("li"); sep.className = "sep"; sep.textContent = "Verificações complementares (descontam pontos da nota)"; ul.append(sep);
   a.comp.forEach(c => linha(c, true));
@@ -739,7 +761,7 @@ async function salvarArquivo(nome, blob) {
 function montar() {
   const a = avaliacao;
   return deriv(Object.assign({ id: cur.id, num: cur.num, aberto: cur.aberto }, a.d,
-    { departamento: val("departamento"), observacoes: val("observacoes"), status: val("status"), responsavel: val("responsavel"), conclusao: val("status") === "Resolvido" ? val("conclusao") : "", atualizado: new Date().toISOString(), avaliacao: { score: a.score, nivel: a.nivel, grau: a.grau, alertas: a.comp.filter(c => c.nivel !== "ok" && !c.info).map(c => c.nome) } }));
+    { departamento: val("departamento"), observacoes: val("observacoes"), status: val("status"), responsavel: val("responsavel"), conclusao: val("status") === "Resolvido" ? val("conclusao") : "", atualizado: new Date().toISOString(), avaliacao: { score: a.score, nivel: a.nivel, grau: a.grau, cls: a.cls, texto: a.texto, pen: a.pen, checks: a.checks.map(c => ({ nome: c.nome, nivel: c.nivel, pts: c.pts, max: c.max, msg: c.msg, dica: c.dica || "" })), comp: a.comp.map(c => ({ nome: c.nome, nivel: c.nivel, pen: c.pen, msg: c.msg, dica: c.dica || "", info: !!c.info })), alertas: a.comp.filter(c => c.nivel !== "ok" && !c.info).map(c => c.nome) } }));
 }
 async function salvarTicket(pdf) {
   const t = montar(), i = T.findIndex(x => x.id === t.id);
@@ -776,6 +798,11 @@ function listar() {
     cel(t.num, "mono").style.cssText = "font-size:13px;white-space:nowrap"; cel(t.titulo, "tt").title = t.titulo; cel(t.usuario);
     bd(t.prioridade, "bp-" + PRN[t.prioridade]); bd(t.status, "s" + ST.indexOf(t.status));
     cel(t.responsavel); cel(t.abertoFmt); cel(t.conclusaoFmt || "—");
+    { const nt = document.createElement("td"), b = document.createElement("button"), a = t.avaliacao || { score: 0 }, sc = a.score, al = (a.alertas || []).length;
+      b.type = "button"; b.className = "nt n-" + (sc >= 70 ? "ok" : sc >= 50 ? "warn" : "bad"); b.textContent = sc + (al ? " ⚠" : "");
+      b.title = "Nota " + sc + "/100" + (a.grau ? " · " + a.grau : "") + (al ? " · " + al + (al === 1 ? " alerta" : " alertas") : "") + " — clique para ver os detalhes";
+      b.setAttribute("aria-label", "Nota " + sc + " de 100. Ver detalhes da avaliação do ticket " + t.num); b.onclick = () => abrirAvaliacao(t, b);
+      nt.append(b); tr.append(nt); }
     const td = document.createElement("td"), ab = document.createElement("div"); ab.className = "ab";
     const bt = (ic, txt, fn) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "ib"; b.title = txt; b.setAttribute("aria-label", txt);
@@ -788,10 +815,50 @@ function listar() {
       T = T.filter(x => x.id !== t.id); delete IMG[t.id]; BD.del(t.id); guardar(); listar();
     });
     td.append(ab); tr.append(td);
-    ["Nº","Título","Solicitante","Prioridade","Status","Responsável","Abertura","Conclusão",""].forEach((l, i) => { tr.children[i].dataset.label = l; });
+    ["Nº","Título","Solicitante","Prioridade","Status","Responsável","Abertura","Conclusão","Nota",""].forEach((l, i) => { tr.children[i].dataset.label = l; });
     tb.append(tr);
   });
 }
+
+// Detalhes da avaliação (modal)
+let focoAv = null, tkAv = null;
+function fecharAvaliacao() {
+  $("mdlAv").hidden = true; document.removeEventListener("keydown", tecladoAv, true);
+  if (focoAv && document.contains(focoAv)) focoAv.focus(); focoAv = null; tkAv = null;
+}
+function tecladoAv(e) {
+  if (e.key === "Escape") { e.preventDefault(); fecharAvaliacao(); }
+  else if (e.key === "Tab") {
+    const bs = [$("avX"), $("avFechar"), $("avEditar")], i = bs.indexOf(document.activeElement);
+    e.preventDefault(); bs[(i + (e.shiftKey ? -1 : 1) + bs.length) % bs.length].focus();
+  }
+}
+function abrirAvaliacao(t, origem) {
+  const a = t.avaliacao || { score: 0 }, cls = a.score >= 70 ? "ok" : a.score >= 50 ? "warn" : "bad";
+  tkAv = t; focoAv = origem || document.activeElement;
+  $("avSub").textContent = t.num + " · " + t.titulo;
+  $("avScore").className = "av-s n-" + cls; $("avN").textContent = a.score;
+  $("avG").textContent = a.grau || a.nivel || ""; $("avB").style.width = a.score + "%";
+  $("avD").textContent = (a.texto || "") + (a.pen ? " " + a.pen + " pts descontados nas verificações complementares." : "");
+  const ul = $("avList"); ul.innerHTML = "";
+  const sep = txt => { const li = document.createElement("li"); li.className = "sep"; li.textContent = txt; ul.append(li); };
+  if (a.checks && a.comp) {
+    a.checks.forEach(c => ul.append(criarLinha(c, false)));
+    sep("Verificações complementares (descontam pontos da nota)");
+    a.comp.forEach(c => ul.append(criarLinha(c, true)));
+    $("avNota").hidden = true;
+  } else {
+    $("avNota").textContent = "Este ticket foi salvo antes do detalhamento da avaliação. Abra-o em «Editar» e salve novamente para ver todas as verificações.";
+    $("avNota").hidden = false;
+    if ((a.alertas || []).length) { sep("Pontos de atenção registrados"); a.alertas.forEach(n => ul.append(criarLinha({ nome: n, nivel: "warn", pen: 0, msg: "Verificação com alerta na última avaliação.", dica: "", info: true }, true))); }
+  }
+  $("mdlAv").hidden = false; document.addEventListener("keydown", tecladoAv, true); $("avFechar").focus();
+  $("mdlAv").firstElementChild.scrollTop = 0;
+}
+$("avX").onclick = $("avFechar").onclick = fecharAvaliacao;
+$("avEditar").onclick = () => { const t = tkAv; focoAv = null; fecharAvaliacao(); if (t) editar(t.id); };
+$("mdlAv").onclick = e => { if (e.target === $("mdlAv")) fecharAvaliacao(); };
+icons($("mdlAv"));
 
 // Excluir todos os tickets (com confirmação)
 let focoMdl = null;
