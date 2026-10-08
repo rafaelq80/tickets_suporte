@@ -21,12 +21,14 @@ h1{margin:0;font-size:25px;letter-spacing:-.4px;color:var(--pri2);display:flex;g
 .mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
 .chip{background:#dce8fb;color:var(--pri2);padding:2px 7px;border-radius:3px;font-size:13px;font-weight:600}
 .i{width:18px;height:18px;display:inline-flex;flex:none}.i svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.logoArea{display:grid;justify-items:end;gap:5px;margin-left:auto}
-.lbox{border:1.5px dashed #b9c4d8;border-radius:6px;padding:8px 14px;color:var(--mut);font-size:14px;display:flex;gap:8px;align-items:center;cursor:pointer;background:#fafbfe}
-.lbox small{font-size:12px}
-.lchip{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:7px 10px;background:#f6f8fd}
-.lchip img{width:30px;height:30px;object-fit:contain;border-radius:3px;background:#fff}
-.lchip b{display:block;font-size:14px}.lchip small{color:var(--mut);font-size:12.5px}
+.logoArea{display:flex;align-items:stretch;gap:8px}
+.lbox{display:inline-flex;gap:8px;align-items:center;padding:0 16px;min-height:45px;border:1.5px dashed #b9c4d8;border-radius:4px;background:#fafbfe;color:#2a3550;font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.lbox:hover{background:#f4f7fc;border-color:var(--pri)}.lbox:focus-visible,.lchip .x:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.lchip{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:4px;padding:3px 5px 3px 4px;min-height:45px;background:#f6f8fd;min-width:0}
+.lchip img{width:36px;height:36px;object-fit:contain;border-radius:3px;background:#fff;border:1px solid var(--line);flex:none}
+.lchip .lt{min-width:0}.lchip small{display:block;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-size:12.5px;font-weight:600}
+.lchip .x{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:4px}.lchip .x:hover{background:#e6ecf8;color:var(--pri2)}.lchip .x .i{width:16px;height:16px}
+.acts-l{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
 .lnk,.x{background:none;border:0;cursor:pointer;font:inherit}
 .lnk{font-size:13px;color:var(--pri);padding:0;display:inline-flex;gap:4px;align-items:center;font-weight:600}
 .x{color:var(--mut);padding:2px}
@@ -114,15 +116,19 @@ input:disabled{background:#f1f4f9;color:#8a94a6;cursor:not-allowed}
 .nt{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--c);background:var(--cb);color:var(--c);border-radius:12px;padding:2px 10px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .nt::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
 .nt:hover{box-shadow:0 0 0 3px var(--cb)}.nt:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
-.mbox-av{max-width:680px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto;display:flex;flex-direction:column;gap:14px}
+.mbox-av{max-width:680px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto;display:flex;flex-direction:column;gap:14px;overscroll-behavior:contain}
+.mbox-av>*{flex-shrink:0}   /* sem isto a lista (overflow:hidden) encolhe e corta o conteúdo em vez de o modal rolar */
 .av-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 .mbox .av-h h2{color:var(--pri2);align-items:flex-start;flex-wrap:wrap}.av-h small{display:block;color:var(--mut);font-weight:400;font-size:13.5px;margin-top:2px;overflow-wrap:anywhere}
 .av-s{display:flex;gap:16px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:12px 16px}
 .av-s .n{font-size:34px;font-weight:700;color:var(--c);line-height:1}.av-s .n small{font-size:14px;color:var(--mut);font-weight:500}
 .av-s .t{flex:1;min-width:0}.av-s .t b{color:var(--c)}.av-s .t p{margin:2px 0 0;font-size:13.5px;color:var(--mut)}
-.mbox-av .mact{margin-top:0}
-.hd-form{flex-wrap:nowrap;align-items:center}.hd-form .tit{flex:1;min-width:0}.hd-form .logoArea{flex:none;align-items:center}
-@media(max-width:640px){.hd-form{flex-wrap:wrap}.hd-form .logoArea{margin-left:0}}
+.mbox-av .mact{margin:0 0 -24px;position:sticky;bottom:-24px;background:var(--card);padding:12px 0 24px;border-top:1px solid var(--line);z-index:1}   /* botões sempre visíveis ao rolar */
+.hd-form{flex-wrap:nowrap;align-items:center}.hd-form .tit{flex:1;min-width:0}
+.hd-form h1{white-space:nowrap;font-size:clamp(17px,calc((100vw - 120px) / 33),23px)}   /* título em uma única linha */
+.hd-form .meta{flex-wrap:nowrap;white-space:nowrap;overflow-x:auto;scrollbar-width:none;width:0;min-width:100%}   /* width:0 + min-width:100% = não alarga a página */.hd-form .meta::-webkit-scrollbar{display:none}.hd-form .meta>*{flex:none}   /* nº, criação e atualização em uma única linha */
+@media(max-width:760px){.hd-form h1{white-space:normal;font-size:19px}.hd-form .meta{font-size:13px}}
+@media(max-width:640px){.hd-form{flex-wrap:wrap}}
 td{vertical-align:middle}
 @media(max-width:760px){
 .tw{padding:0 12px 8px}
@@ -151,14 +157,8 @@ th:last-child,td:last-child{width:1%;white-space:nowrap}
 <div class="card nw" id="tela1" hidden>
  <div class="hd hd-form">
   <div class="tit">
-   <h1><i class="i" data-i="ticket" style="width:26px;height:26px"></i><span>Simulador de Preenchimento de Tickets<br>Suporte Técnico</span></h1>
+   <h1><i class="i" data-i="ticket" style="width:26px;height:26px"></i><span>Simulador de Preenchimento de Tickets - Suporte Técnico</span></h1>
    <div class="meta"><span class="chip mono" id="num"></span><span>•</span><i class="i" data-i="cal" style="width:16px;height:16px"></i><span id="dataLonga"></span><span id="data" hidden></span><span id="atuWrap" hidden style="display:inline-flex;gap:6px;align-items:center">•<i class="i" data-i="clock" style="width:16px;height:16px"></i><span id="atu"></span></span></div>
-  </div>
-  <div class="logoArea">
-   <div class="lbox" id="logoBox" title="Selecionar o logo da empresa"><i class="i" data-i="up"></i><span>Selecionar logotipo<br><small>PNG ou JPG</small></span></div>
-   <div class="lchip" id="logoChip" hidden><img id="chipImg" alt=""><div><b>Logo da Empresa</b><small id="chipNome"></small></div><button type="button" class="x" id="rmLogo" aria-label="Remover logo"><i class="i" data-i="x"></i></button></div>
-   <button type="button" class="lnk" id="altLogo" hidden><i class="i" data-i="up" style="width:14px;height:14px"></i>Alterar logotipo</button>
-   <input type="file" id="logoFile" accept="image/png,image/jpeg" hidden>
   </div>
  </div>
  <form id="f" novalidate>
@@ -192,7 +192,13 @@ th:last-child,td:last-child{width:1%;white-space:nowrap}
    <div><label for="responsavel"><span>Responsável <b class="req">*</b></span></label><div class="iw"><i class="i" data-i="user"></i><input id="responsavel" maxlength="80" placeholder="Atendente do chamado"></div><div class="msg" id="e-responsavel"></div></div>
    <div><label for="conclusao"><span><i class="i li" data-i="calok"></i>Data e hora de conclusão</span><button type="button" class="lnk" id="agora" disabled>Agora</button></label><input type="datetime-local" id="conclusao" disabled><div class="msg" id="e-conclusao"></div><div class="note" id="hintConc"><i class="i" data-i="lock" style="width:14px;height:14px"></i>Disponível apenas com o status «Resolvido»</div></div>
   </div>
-  <div class="actions"><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn" id="cancelar"><i class="i" data-i="left"></i>Lista de tickets</button><button type="button" class="btn" id="limpar"><i class="i" data-i="trash"></i>Limpar formulário</button></div><button type="submit" class="btn p">Avaliar ticket <i class="i" data-i="right"></i></button></div>
+  <div class="actions"><div class="acts-l"><button type="button" class="btn" id="cancelar"><i class="i" data-i="left"></i>Lista de tickets</button><button type="button" class="btn d" id="limparForm"><i class="i" data-i="trash"></i>Limpar formulário</button>
+   <div class="logoArea">
+    <button type="button" class="lbox" id="logoBox" title="Selecionar o logo da empresa (PNG ou JPG)"><i class="i" data-i="up"></i><span>Inserir logo</span></button>
+    <div class="lchip" id="logoChip" hidden><img id="chipImg" alt="Logo da empresa"><div class="lt"><small id="chipNome"></small></div><button type="button" class="x" id="altLogo" hidden aria-label="Alterar logotipo" title="Alterar logotipo"><i class="i" data-i="up"></i></button><button type="button" class="x" id="rmLogo" aria-label="Remover logo" title="Remover logo"><i class="i" data-i="x"></i></button></div>
+    <input type="file" id="logoFile" accept="image/png,image/jpeg" hidden>
+   </div>
+  </div><button type="submit" class="btn p">Avaliar ticket <i class="i" data-i="right"></i></button></div>
  </form>
 </div>
 
@@ -357,7 +363,7 @@ novoNumero();
 // Logo: escolhido pelo usuário; nada é guardado no navegador
 try { localStorage.removeItem("tn1_logo"); } catch (e) {}
 function setLogo(d, nome) {
-  logo = d; $("chipImg").src = d; $("chipNome").textContent = nome;
+  logo = d; $("chipImg").src = d; $("chipNome").textContent = nome; $("chipNome").title = nome;
   $("logoBox").hidden = true; $("logoChip").hidden = false; $("altLogo").hidden = false;
 }
 $("logoBox").onclick = $("altLogo").onclick = () => $("logoFile").click();
@@ -479,7 +485,7 @@ $("observacoes").oninput = () => $("co").textContent = $("observacoes").value.le
 $("descricao").addEventListener("input", () => {
   if ($("passos").classList.contains("invalid") && !regras.passos($("passos").value.trim())) { $("passos").classList.remove("invalid"); $("e-passos").classList.remove("on"); }
 });
-$("limpar").onclick = () => { zerar(); if (!editId) novoNumero(); };
+$("limparForm").onclick = () => { zerar(); if (!editId) novoNumero(); };
 $("novo").onclick = () => { editId = null; zerar(); novoNumero(); ir("tela1"); };
 $("cancelar").onclick = () => { editId = null; ir("tela0"); };
 $("agora").onclick = () => { $("conclusao").value = loc(new Date()); $("conclusao").dispatchEvent(new Event("input")); };
@@ -508,16 +514,82 @@ function luhn(x) {
   const n = x.replace(/\D/g, ""); if (n.length < 13 || n.length > 19) return false;
   let sm = 0, alt = false; for (let i = n.length - 1; i >= 0; i--) { let v = +n[i]; if (alt) { v *= 2; if (v > 9) v -= 9; } sm += v; alt = !alt; } return sm % 10 === 0;
 }
+// Cartão: além do Luhn, exige prefixo/tamanho de bandeira e ignora números de IMEI, série, protocolo etc.
+const CTX_NAO_CARTAO = /imei|serial|s[eé]rie|protocolo|patrim[oô]nio|nota fiscal|\bnf\b|pedido|c[oó]digo de barras/i;
+function cartaoOk(m, antes) {
+  const n = m.replace(/\D/g, ""); if (!luhn(n) || CTX_NAO_CARTAO.test(antes)) return false;
+  const L = n.length, p2 = +n.slice(0, 2), p3 = +n.slice(0, 3), p4 = +n.slice(0, 4);
+  if (n[0] === "4") return L === 13 || L === 16 || L === 19;                       // Visa (inclui vários Elo)
+  if ((p2 >= 51 && p2 <= 55) || (p4 >= 2221 && p4 <= 2720)) return L === 16;      // Mastercard
+  if (p2 === 34 || p2 === 37) return L === 15;                                      // Amex
+  if (p2 === 36 || p2 === 38 || (p3 >= 300 && p3 <= 305)) return L === 14 || L === 16; // Diners
+  if (p4 === 6011 || p2 === 65) return L === 16 || L === 19;                        // Discover / Elo 65x
+  if (p4 >= 3528 && p4 <= 3589) return L >= 16 && L <= 19;                          // JCB
+  if (/^(606282|3841)/.test(n)) return L === 16 || L === 19;                        // Hipercard
+  if (/^(5041|5066|5067|509|6277|6362|6363)/.test(n)) return L === 16;              // Elo
+  return false;
+}
+// Token/chave: o valor após "token", "api_key"... precisa misturar letras e números (palavra comum não é credencial).
+// Hex longo só vale quando não há contexto de hash/checksum.
+const CTX_HASH = /(?:md5|sha-?\d*|hash|checksum|digest|fingerprint|thumbprint|uuid|guid|commit)\W{0,12}$/i;
+function tokenOk(x) {
+  const re = /\b(?:api[_-]?key|access[_-]?key|token|secret|bearer)\b\s*(?:[:=]\s*|\s+)([A-Za-z0-9_\-.+\/]{12,})/gi; let m;
+  while ((m = re.exec(x))) if (/\d/.test(m[1]) && /[A-Za-z]/.test(m[1])) return true;
+  const rh = /\b[A-Fa-f0-9]{32,}\b/g;
+  while ((m = rh.exec(x))) if (!CTX_HASH.test(x.slice(Math.max(0, m.index - 20), m.index))) return true;
+  return false;
+}
 function sensiveis(d) {
   const ach = {}, marca = (tipo, k) => { (ach[tipo] = ach[tipo] || new Set()).add(CAMPOS[k]); };
   Object.keys(CAMPOS).forEach(k => {
     const x = d[k] || "";
     (x.match(/\b\d{3}[.\s]?\d{3}[.\s]?\d{3}[-\s]?\d{2}\b/g) || []).forEach(m => { if (cpfOk(m)) marca("CPF", k); });
-    (x.match(/\b(?:\d[ -]?){13,19}\b/g) || []).forEach(m => { if (luhn(m)) marca("número de cartão", k); });
+    { const rc = /\b(?:\d[ -]?){13,19}\b/g; let m; while ((m = rc.exec(x))) if (cartaoOk(m[0], x.slice(Math.max(0, m.index - 25), m.index))) marca("número de cartão", k); }
     if (/\b(?:senha|password|passwd|pwd)\b\s*(?:[:=]\s*|\s(?:é|e|era|foi)\s+)\S{4,}/i.test(x)) marca("senha", k);
-    if (/\b(?:api[_-]?key|token|secret|bearer)\b\s*[:=]?\s*[A-Za-z0-9_\-.]{12,}/i.test(x) || /\b[A-Fa-f0-9]{32,}\b/.test(x)) marca("token ou chave", k);
+    if (tokenOk(x)) marca("token ou chave", k);
   });
   return ach;
+}
+// Procura `re` (escrita SEM acento) em `txt`, ignorando ocorrências negadas nas 3 palavras anteriores
+// ("não funcionou", "sem sucesso", "não foi possível confirmar"). true = achou alguma ocorrência não negada.
+// Similaridade para duplicidade: reduz sinônimos/flexões a um termo canônico e ignora palavras sem conteúdo.
+const DUP_STOP = new Set("de do da dos das no na nos nas em ao aos para por com uma uns umas que se ou mas ele ela eles elas este esta estes estas esse essa isso isto foi ser sao era estao estava ja tambem mais muito pouco tudo todo toda parece fica ficou ficando tem teve ter como quando onde porque pelo pela pelos pelas seu sua meu minha dele dela problema problemas erro erros falha falhas desde ontem hoje agora manha tarde semana setor sala area departamento depto local".split(" "));
+const DUP_SIN = [
+  [/^(pc|desktop|computador|computadores|maquina|maquinas|estacao|estacoes|cpu|torre)$/, "computador"],
+  [/^(notebook|laptop)$/, "notebook"], [/^(rh|humanos|recursos)$/, "rh"],
+  [/^(liga|ligar|ligando|ligou|ligado|liguei|ligam)$/, "ligar"],
+  [/^(queimad\w*|queimou|queimar|danificad\w*|danificou|estragad\w*|estragou|defeituos\w*|pifou|pifad\w*)$/, "defeito"],
+  [/^(sinal|imagem|video|tela)$/, "imagem"], [/^(nao|sem|nenhum|nenhuma|nunca)$/, "nao"],
+  [/^(imprime|imprimir|imprimindo|imprimiu|impressao)$/, "imprimir"],
+  [/^(abre|abrir|abrindo|abriu|iniciar|inicia|abertura)$/, "abrir"],
+  [/^(trava|travar|travando|travou|travada|travado|congela|congelou|congelando|travamento)$/, "travar"],
+  [/^(lento|lenta|lentidao|devagar|demora|demorando|demorado)$/, "lento"],
+  [/^(internet|rede|wifi|conexao|conectar|conecta)$/, "rede"], [/^(senha|senhas|password)$/, "senha"],
+  [/^(email|mail|correio|outlook)$/, "email"]
+];
+function canonDup(w) {
+  if (w.length < 2 || DUP_STOP.has(w)) return "";
+  for (const [re, c] of DUP_SIN) if (re.test(w)) return c;
+  return w.length > 4 ? w.replace(/s$/, "") : w;
+}
+const simDup = (a, b) => {
+  const f = x => new Set(norm(x).split(" ").map(canonDup).filter(Boolean)), A = f(a), B = f(b); if (!A.size || !B.size) return 0;
+  let i = 0; A.forEach(w => { if (B.has(w)) i++; }); return i / (A.size + B.size - i);
+};
+// Departamentos cujo solicitante, por si só, sustenta prioridade Alta/Crítica (editável).
+const DEP_PRIORITARIOS = ["Diretoria"];
+// Títulos: palavras de ligação e termos vagos que não dizem "o quê" nem "onde".
+const TIT_LIGACAO = new Set("com por que para uma uns umas dos das nos nas ele ela esta estao esta foi ser mais muito tudo todo toda ainda nao sem mas pelo pela pelos pelas".split(" "));
+const TIT_VAGAS = new Set("erro erros problema problemas falha falhas defeito defeitos bug sistema sistemas programa programas aplicativo ajuda solicitacao chamado ticket urgente urgencia favor novamente novo nova outra vez sempre hoje agora dando aparecendo acontecendo funciona funcionando funcionar".split(" "));
+const NEGA = /^(nao|nunca|jamais|sem|nem|nenhum|nenhuma)$/;
+function achaSemNegar(re, txt) {
+  const t = norm(txt), g = new RegExp(re.source, "g"); let m;
+  while ((m = g.exec(t))) {
+    const antes = t.slice(Math.max(0, m.index - 30), m.index).trim().split(" ").slice(-3);
+    if (!antes.some(w => NEGA.test(w))) return true;
+    if (!m[0].length) g.lastIndex++;
+  }
+  return false;
 }
 // ---- verificações complementares (descontam pontos; SLA é só informativo) ----
 function complementares(d) {
@@ -532,29 +604,32 @@ function complementares(d) {
 
   // 2) Coerência entre status e passos
   let inc = null;
-  if (st === "Resolvido") { if (!/resolv|funcion|normaliz|abriu|voltou|sucesso|confirm|restabelec|conclu/.test(fimTxt)) inc = "O status é Resolvido, mas os passos finais não registram a solução nem a confirmação com o usuário."; }
-  else if (st === "Escalado para N2") { if (!/escal|\bn2\b|n[ií]vel 2|encaminh|repass|transfer/.test(txt)) inc = "O status é Escalado para N2, mas nenhum passo registra o escalonamento (para quem e com quais evidências)."; }
-  else if (st === "Aguardando usuário") { if (!/aguard|retorno|contat|solicit|pedi|enviei|liguei|mensagem|e-?mail|respost/.test(txt)) inc = "O status é Aguardando usuário, mas nenhum passo registra o que foi solicitado ao usuário."; }
-  else if (/(chamado|ticket|problema|incidente)\s+(foi\s+)?(resolvido|solucionado|encerrado)|resolvido\./.test(txt)) inc = "Os passos indicam resolução, mas o status ainda é " + st + ".";
+  const SOL = /resolv|funcion|normaliz|abriu|voltou|sucesso|confirm|restabelec|conclu/, PERSISTE = /persist|permanec|reincid|mesmo (erro|problema)|(erro|problema|falha|lentidao|travamento|sintoma) (ainda )?continu|continu(a|ou|am) (igual|sem |ocorrendo|aparecendo|travando|lent)|ainda (ocorre|aparece|apresenta|acontece|trava)/;
+  if (st === "Resolvido") { if (!achaSemNegar(SOL, fimTxt) || achaSemNegar(PERSISTE, fimTxt)) inc = "O status é Resolvido, mas os passos finais não registram a solução nem a confirmação com o usuário."; }
+  else if (st === "Escalado para N2") { if (!achaSemNegar(/escal|\bn2\b|nivel 2|encaminh|repass|transfer/, txt)) inc = "O status é Escalado para N2, mas nenhum passo registra o escalonamento (para quem e com quais evidências)."; }
+  else if (st === "Aguardando usuário") { if (!achaSemNegar(/aguard|retorno|contat|solicit|pedi|enviei|liguei|mensagem|e ?mail|respost/, txt)) inc = "O status é Aguardando usuário, mas nenhum passo registra o que foi solicitado ao usuário."; }
+  else if (achaSemNegar(/(chamado|ticket|problema|incidente) (foi )?(resolvido|solucionado|encerrado)|\bresolvido$/, txt)) inc = "Os passos indicam resolução, mas o status ainda é " + st + ".";
   if (inc) add("Coerência entre status e passos", "warn", 5, inc, "Ajuste o status ou complete os passos para que os dois contem a mesma história.");
   else add("Coerência entre status e passos", "ok", 0, "O status é coerente com os passos registrados.");
 
   // 3) Impacto declarado na prioridade
   const escopo = /todos|todas|\btoda\b|v[áa]rios|v[áa]rias|equipe|setor|departamento|empresa|cliente|produ[çc][ãa]o|fechamento|prazo|parad|bloquead|\b\d+\s*(usu[áa]rios|pessoas|m[áa]quinas|esta[çc][õo]es|computadores|colaboradores)/i;
-  if (["Crítica", "Alta"].includes(d.prioridade) && !escopo.test(j + " " + desc)) add("Impacto declarado na prioridade", "warn", d.prioridade === "Crítica" ? 4 : 2, "Prioridade " + d.prioridade + " sem indicar a abrangência do impacto.", "Informe quantos usuários ou qual processo/prazo são afetados para sustentar a prioridade.");
-  else add("Impacto declarado na prioridade", "ok", 0, ["Crítica", "Alta"].includes(d.prioridade) ? "A abrangência do impacto sustenta a prioridade." : "Prioridade proporcional ao impacto descrito.");
+  const depPri = DEP_PRIORITARIOS.includes(val("departamento"));
+  if (["Crítica", "Alta"].includes(d.prioridade) && !escopo.test(j + " " + desc) && !depPri) add("Impacto declarado na prioridade", "warn", d.prioridade === "Crítica" ? 4 : 2, "Prioridade " + d.prioridade + " sem indicar a abrangência do impacto.", "Informe quantos usuários ou qual processo/prazo são afetados para sustentar a prioridade.");
+  else add("Impacto declarado na prioridade", "ok", 0, ["Crítica", "Alta"].includes(d.prioridade) ? (depPri && !escopo.test(j + " " + desc) ? "O departamento do solicitante (" + val("departamento") + ") sustenta a prioridade." : "A abrangência do impacto sustenta a prioridade.") : "Prioridade proporcional ao impacto descrito.");
 
   // 4) Tempo de atendimento
   if (st === "Resolvido" && conc) {
     const min = (new Date(conc) - new Date(cur.aberto)) / 60000, tx = dur(Math.max(0, min * 60000));
-    if (min < 2) add("Tempo de atendimento", "warn", 3, "Conclusão em menos de 2 minutos após a abertura.", "Confirme se os passos foram realmente executados e se as datas estão corretas.");
+    const rapido = d.categoria === "Acesso/Login";   // reset de senha/desbloqueio é naturalmente rápido
+    if (min < (rapido ? 0.5 : 2)) add("Tempo de atendimento", "warn", 3, "Conclusão em menos de " + (rapido ? "30 segundos" : "2 minutos") + " após a abertura.", "Confirme se os passos foram realmente executados e se as datas estão corretas.");
     else if (min > 43200) add("Tempo de atendimento", "warn", 3, "Atendimento com mais de 30 dias entre abertura e conclusão (" + tx + ").", "Verifique as datas ou registre o motivo da demora nas observações.");
     else add("Tempo de atendimento", "ok", 0, "Tempo entre abertura e conclusão coerente (" + tx + ").");
   } else add("Tempo de atendimento", "ok", 0, "Ticket não concluído: o tempo será avaliado quando for resolvido.");
 
   // 5) Qualidade do texto
   const todos = [d.titulo, d.descricao, d.passos, d.justificativa, d.observacoes].join("\n");
-  const lixo = /^(?:(?:teste|testando|test|asdf\w*|xxx+|aaa+|blabla)\W*)+$/i.test(d.titulo.trim()) || /^[\W\d]+$/.test(d.titulo.trim()) || /\b(asdf\w*|qwerty|lorem ipsum|blabla|xxx+)\b/i.test(todos) || /(\S)\1{5,}/.test(todos) || /ticket de teste|apenas um teste/i.test(todos);
+  const lixo = /^(?:(?:teste|testando|test|asdf\w*|xxx+|aaa+|blabla)\W*)+$/i.test(d.titulo.trim()) || /^[\W\d]+$/.test(d.titulo.trim()) || /\b(asdf\w*|qwerty|lorem ipsum|blabla)\b/i.test(todos) || /(?:^|\s)x{3,}(?=\s|$)/i.test(todos) || /([A-Za-zÀ-ÿ])\1{5,}/.test(todos) || /ticket de teste|apenas um teste/i.test(todos);
   const caps = x => { const l = x.replace(/[^A-Za-zÀ-ÿ]/g, ""); return l.length >= 15 && l.replace(/[^A-ZÀ-Þ]/g, "").length / l.length > .6; };
   if (lixo) add("Qualidade do texto", "bad", 8, "O texto parece de teste ou preenchido sem conteúdo (ex.: repetições ou sequências aleatórias).", "Substitua por informações reais do atendimento.");
   else if (caps(d.titulo) || caps(d.descricao) || /[!?]{3,}/.test(todos)) add("Qualidade do texto", "warn", 3, "Texto em letras maiúsculas ou com pontuação excessiva.", "Use um tom objetivo e neutro; descreva os fatos sem destaques.");
@@ -563,8 +638,9 @@ function complementares(d) {
   // 6) Detalhe técnico
   const cita = /erro|mensagem|falha|c[óo]digo|exce[çc][ãa]o/.test(desc);
   const semMsg = /sem (mensagem|erro)|nenhuma mensagem|n[ãa]o (aparece|exibe|h[áa]) (nenhuma )?(mensagem|erro)|n[ãa]o h[áa] mensagem/.test(desc);
-  const cod = /0x[0-9a-f]{3,}|\b(?:erro|error|err|c[óo]digo|code)\b\W{0,3}[a-z]*\d{2,}|\b[45]\d{2}\b|exception|ora-\d+|["“«][^"”»]{8,}["”»]/i.test(d.descricao);
-  const ver = /windows\s*(?:7|8|10|11|server)|macos|ubuntu|linux|android\s*\d+|ios\s*\d+|iphone|vers[ãa]o\s*[\d.]+|\bv\d+(?:\.\d+)+|\b\d+\.\d+(?:\.\d+)+/i.test(desc + " " + txt);
+  const cod = /0x[0-9a-f]{3,}|\b(?:erro|error|err|c[óo]digo|code)\b\W{0,3}[a-z]*\d{2,}|\b(?:http|status)\W{0,3}[45]\d{2}\b|exception|ora-\d+|["“«][^"”»]{8,}["”»]/i.test(d.descricao);
+  const IP = /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b(?::\d+)?/g;   // IP não é versão
+  const ver = /windows\s*(?:xp|vista|7|8|10|11|server)|macos|ubuntu|debian|centos|fedora|linux|android\s*\d+|ios\s*\d+|ipados|iphone|vers[ãa]o\s*[\d.]+|\bv\d+(?:\.\d+)+|\b\d+\.\d+(?:\.\d+)+|\b(?:excel|word|powerpoint|outlook|office|visio|access|autocad)\s*(?:20\d{2}|365|\d{2}(?:\.\d+)?)\b|\b(?:microsoft|office|m)\s*365\b|\b(?:chrome|edge|firefox|safari|opera)\s*v?\d{2,3}(?:\.\d+)*\b|\bbuild\s*\d+/i.test((desc + " " + txt).replace(IP, " "));
   const falhas = [];
   if (cita && !semMsg && !cod) falhas.push("mensagem de erro citada sem o código ou o texto exato");
   if (["Software", "Dispositivo móvel"].includes(d.categoria) && !ver) falhas.push("versão do sistema operacional ou do aplicativo não informada");
@@ -573,7 +649,7 @@ function complementares(d) {
 
   // 7) Possível duplicidade
   const alvo = d.titulo + " " + d.descricao; let melhor = null, ms = 0;
-  T.forEach(t => { if (t.id === cur.id) return; const v = sim(alvo, t.titulo + " " + t.descricao); if (v > ms) { ms = v; melhor = t; } });
+  T.forEach(t => { if (t.id === cur.id) return; const v = simDup(alvo, t.titulo + " " + t.descricao); if (v > ms) { ms = v; melhor = t; } });
   const pc = Math.round(ms * 100), mesmo = melhor && melhor.usuario === d.usuario ? ", mesmo solicitante" : "";
   if (melhor && ms >= .75) add("Possível duplicidade", "bad", 8, "Muito semelhante ao ticket " + melhor.num + " (" + pc + "%, status " + melhor.status + mesmo + ").", "Confira se não é o mesmo chamado. Se for, atualize o ticket existente em vez de criar outro.");
   else if (melhor && ms >= .5) add("Possível duplicidade", "warn", 4, "Parecido com o ticket " + melhor.num + " (" + pc + "%, status " + melhor.status + mesmo + ").", "Verifique se não há relação com o chamado existente.");
@@ -596,7 +672,9 @@ function analisar() {
   // Título
   const palavras = d.titulo.split(/\s+/).filter(Boolean).length;
   const ctx = /\b(no|na|nos|nas|em|do|da|de|ao|para|via)\b/i.test(d.titulo);
-  if (palavras >= 4 && ctx) add("Título", 15, 15, "Resumo específico: diz o quê e onde.");
+  const esp = norm(d.titulo).split(" ").filter(w => w.length > 2 && !TIT_LIGACAO.has(w) && !TIT_VAGAS.has(w)).length;   // palavras que nomeiam algo
+  if (palavras >= 4 && ctx && esp >= 1) add("Título", 15, 15, "Resumo específico: diz o quê e onde.");
+  else if (palavras >= 3 && esp === 0) add("Título", 3, 15, "Título genérico: não cita sistema, equipamento nem local.", "Troque termos vagos (erro, problema, sistema) pelo nome do sistema ou equipamento. Ex.: «Outlook não abre no notebook do financeiro».");
   else if (palavras >= 3) add("Título", 9, 15, "Título compreensível, mas pouco específico.", "Inclua o sistema/equipamento e o contexto. Ex.: «Outlook não abre no notebook do financeiro».");
   else add("Título", 3, 15, "Título genérico demais.", "Diga o quê e onde, com pelo menos 4 palavras.");
 
@@ -606,8 +684,8 @@ function analisar() {
     "Impressora": /impress|toner|scanner/, "E-mail": /e-?mail|outlook|gmail|caixa de entrada/,
     "Dispositivo móvel": /celular|smartphone|tablet|android|iphone|\bios\b/, "Hardware": /teclado|mouse|monitor|bateria|\bhd\b|\bssd\b|n[ãa]o liga|carregador|cabo/,
     "Software": /instal|desinstal|aplicativo|\bapp\b|software|licen[çc]a|\bexcel\b|\bword\b|powerpoint|\boffice\b|\berp\b|\bcrm\b|(atualiza[çc][ãa]o|atualizar|travando|travou|fecha sozinho) (d[oa] |o |a )?(programa|aplicativo|software|sistema (erp|interno))|programa (de|d[oa]) [a-z]+ (n[ãa]o abre|trav)|n[ãa]o abre (o |a )?(excel|word|powerpoint|aplicativo|programa)/,
-    "Telefonia VOIP": /telefon|voip|ramal|\bsip\b|softphone|\bpabx\b|\bpbx\b|headset|discagem|\bura\b|asterisk|liga[çc][ãa]o|chamada/,
-    "Videoconferência/Colaboração": /teams|zoom|google meet|webex|videoconfer|videochamada|webcam|microfone|[áa]udio|reuni[ãa]o online|slack|compartilhar tela|sala virtual/,
+    "Telefonia VOIP": /telefon|voip|ramal|\bsip\b|softphone|\bpabx\b|\bpbx\b|headset|discagem|\bura\b|asterisk|liga[çc][ãa]o|\bchamadas?\b(?! (de )?v[ií]deo)/,
+    "Videoconferência/Colaboração": /teams|zoom|google meet|webex|videoconfer|videochamada|webcam|microfone|[áa]udio|reuni[ãa]o online|slack|compartilhar tela|sala virtual|\bchamadas? de v[ií]deo/,
     "Cloud": /cloud|nuvem|\baws\b|azure|\bgcp\b|\bs3\b|onedrive|sharepoint|google drive|microsoft 365|office 365|\bm365\b|saas|m[áa]quina virtual|\bvm\b|bucket|kubernetes|docker|cont[êe]iner/,
     "Servidores/Infraestrutura": /servidor|data ?center|\brack\b|hyper-?v|vmware|esxi|proxmox|active directory|\bdns\b|\bdhcp\b|\bswitch\b|firewall|\braid\b|nobreak|\bups\b|storage|virtualiza|cluster|\bgpo\b|dom[ií]nio/,
     "Banco de dados": /banco de dados|\bsql\b|mysql|postgres|oracle|mongodb|sql ?server|\bquery\b|consulta sql|\bora-\d+|deadlock|\bdump\b|\bbd\b/,
@@ -617,7 +695,10 @@ function analisar() {
   if (d.categoria === "Outro") add("Categoria", 8, 10, "Categoria genérica.", "Se possível, escolha uma categoria específica para facilitar o roteamento.");
   else if (mapa[d.categoria] && mapa[d.categoria].test(all)) add("Categoria", 10, 10, "Categoria coerente com o relato.");
   else {
-    const outra = Object.keys(mapa).find(k => k !== d.categoria && mapa[k].test(all));
+    // Conta ocorrências por categoria (título pesa em dobro) e sugere a mais forte; uma palavra solta no meio do texto não basta.
+    const conta = (re, t) => (t.match(new RegExp(re.source, "g")) || []).length, tit = d.titulo.toLowerCase();
+    const rank = Object.keys(mapa).filter(k => k !== d.categoria).map(k => [k, conta(mapa[k], all) + conta(mapa[k], tit)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+    const outra = rank.length && rank[0][1] >= 2 ? rank[0][0] : null;
     if (outra) add("Categoria", 5, 10, "O texto sugere outra categoria.", "O relato parece ser de «" + outra + "». Revise a categoria escolhida.");
     else add("Categoria", 7, 10, "Nada no texto confirma nem contradiz a categoria.");
   }
@@ -626,7 +707,7 @@ function analisar() {
   const j = d.justificativa.toLowerCase();
   // Atenuantes: o impacto existe, mas há cobertura, alternativa ou contorno
   const MITIGA = /n[ãa]o (impede|para|afeta|bloqueia|compromete)|sem impedimento|alternativ|contorno|paliativ|tempor[aá]ri|substitu|cobrind|cobertur|reserva|\bbackup\b|consegue (trabalhar|continuar|atender)|mas (h[áa]|existe|tem|outr)|outr[oa]s? (comprador|colega|pessoa|usu[áa]rio|atendente|m[áa]quina|equipamento|caminho|forma|op[çc][ãa]o|respons[áa]vel)/;
-  const impacto = /impede|parad|afeta|equipe|cliente|prazo|urgente|sem acesso|alternativa|contorno|todos|v[áa]rios|financeiro|produ[çc][ãa]o|fechamento/;
+  const impacto = /impede|parad|afeta|equipe|cliente|prazo|urgente|sem acesso|todos|v[áa]rios|financeiro|produ[çc][ãa]o|fechamento/;
   let pp = j.length >= 15 ? (impacto.test(j) ? 15 : 10) : 6, dp = "";
   if (["Alta","Crítica"].includes(d.prioridade) && MITIGA.test(j)) { pp = Math.min(pp, 7); dp = "A justificativa cita alternativa/contorno, o que sugere prioridade menor. Reavalie."; }
   else if (["Baixa","Média"].includes(d.prioridade) && !MITIGA.test(j) && /parad[oa]s?\b|impede|todos os|v[áa]rios usu|toda a equipe/.test(j)) { pp = Math.min(pp, 7); dp = "A justificativa indica impacto alto. Reavalie a prioridade."; }
@@ -1009,10 +1090,7 @@ async function gerarPDF(t) {
   campo("Responsável", t.responsavel, col[1], bx + 38.5);
   campo("Concluído em", t.conclusaoFmt || "—", col[2], bx + 38.5);
   campo("Tempo / SLA", [t.tempo, (t.slaTxt || "").replace("Dentro do SLA", "no SLA").replace("Fora do SLA", "fora do SLA")].filter(Boolean).join(" · ") || "—", col[3], bx + 38.5, 29);
-  y = bx + bh + 7;
-  T("italic", 9.5, GRAY);
-  linhas("Justificativa da prioridade: " + t.justificativa, W).forEach(l => { ensure(5); doc.text(l, M, y); y += 5; });
-  y += 5;
+  y = bx + bh + 9;
 
   const secao = (n, t) => {
     ensure(26); T("bold", 9.5, NAVY); doc.text(n + ".  " + t.toUpperCase(), M, y);
@@ -1024,7 +1102,12 @@ async function gerarPDF(t) {
   linhas(t.descricao, W).forEach(l => { ensure(6); T("normal", 10.5, INK); doc.text(l, M, y); y += 5.4; });
   y += 8;
 
-  secao(2, "Passos realizados");
+  secao(2, "Justificativa da prioridade");
+  if (!t.justificativa) { T("italic", 10.5, GRAY); doc.text("Não informada", M, y); y += 8; }
+  else linhas(t.justificativa, W).forEach(l => { ensure(6); T("normal", 10.5, INK); doc.text(l, M, y); y += 5.4; });
+  y += 8;
+
+  secao(3, "Passos realizados");
   const P = lerPassos(t.passos).itens;
   if (!P.length) { T("italic", 10.5, GRAY); doc.text("Nenhum passo registrado", M, y); y += 8; }
   P.forEach((st, k) => {
@@ -1038,7 +1121,7 @@ async function gerarPDF(t) {
   });
   y += 6;
 
-  secao(3, "Anexos");
+  secao(4, "Anexos");
   const A = t.anexos;
   if (/^nenhum/i.test(A)) { T("italic", 10.5, GRAY); doc.text("Nenhum", M, y); y += 8; }
   else {
@@ -1061,7 +1144,7 @@ async function gerarPDF(t) {
   y += 6;
 
   if (t.observacoes) {
-    secao(4, "Observações");
+    secao(5, "Observações");
     linhas(t.observacoes, W).forEach(l => { ensure(6); T("normal", 10.5, INK); doc.text(l, M, y); y += 5.4; });
     y += 6;
   }
